@@ -1,38 +1,37 @@
-#include<iostream>
-#include<vector>
-#include<map>
+#include"vnb.h"
 
-std::vector<int> weight = {4,6,2,16,5};
-int getMaxV(void)
+VariableNum::VariableNum(const std::vector<int>& weight)
 {
-	int v = 0;
-	for(int i=0;i<weight.size();i++)
+	this->weight = weight;
+	this->size = weight.size();
+	this->maxV = 1;
+	for(int i=0;i<this->size;i++)
 	{
-		v = v*weight[i] + weight[i]-1;
+		this->maxV *= weight[i];
 	}
-	return v;
+	this->v = std::vector<int>(this->size, 0);
 }
-int splitWeight(int v)
+std::vector<int>& VariableNum::split(int n)
 {
-	std::cout<<v<<":";
-	int curWeight = 1;
+	for(int i=0;i<this->size;i++)
+	{
+		this->v[i] = n % this->weight[i];
+		n /= this->weight[i];
+	}
+	return this->v;
+}
+int VariableNum::getVal(std::vector<int>& v)
+{
 	int val = 0;
-	for(int i=0;i<weight.size();i++)
+	int count = this->size < v.size()?this->size:v.size();
+	for(int i=0;i<count;i++)
 	{
-		val = v % weight[i];
-		v = v / weight[i];
-		std::cout<<val<<" ";
+		val = val*this->weight[i] + v[i];
 	}
-	std::cout<<std::endl;
-	return 0;
+	return val;
 }
-int main()
+int VariableNum::getMaxV(void)
 {
-	int maxV = getMaxV();
-	for(int i=0;i<=maxV;i++)
-	{
-		splitWeight(i);
-	}
-	return 0;
+	return this->maxV - 1;
 }
 
